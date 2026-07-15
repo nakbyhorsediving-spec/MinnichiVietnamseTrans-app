@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>みんなの日本語ベトナム語変換 (1-25課)</title>
+<style>
+    :root {
+        --primary-color: #e53935;
+        --bg-color: #f5f5f5;
+        --card-bg: #ffffff;
+        --text-main: #333333;
+        --text-sub: #666666;
+    }
+    body {
+        font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+    #app-container {
+        width: 100%;
+        max-width: 400px;
+        background-color: var(--card-bg);
+        height: 100vh;
+        max-height: 800px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+    }
+    .page {
+        display: none;
+        flex-direction: column;
+        height: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+        animation: fadeIn 0.3s ease;
+    }
+    .page.active {
+        display: flex;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateX(10px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    .header {
+        text-align: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--primary-color);
+        position: relative;
+    }
+    .header h1 {
+        font-size: 1.2rem;
+        color: var(--primary-color);
+        margin: 0;
+    }
+    .btn-home {
+        position: absolute;
+        left: 0;
+        top: 0;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--primary-color);
+        padding: 0;
+    }
+    .content {
+        flex: 1;
+        overflow-y: auto;
+        padding-bottom: 20px;
+    }
+    .title-page {
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+    }
+    .title-page h2 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+    .title-page p {
+        color: var(--text-sub);
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+    .lesson-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        width: 100%;
+        margin-bottom: 20px;
+        overflow-y: auto;
+        max-height: 60vh;
+        padding: 5px;
+    }
+    .btn-lesson {
+        background-color: white;
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        padding: 10px 0;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .btn-lesson:hover {
+        background-color: var(--primary-color);
+        color: white;
+    }
+    .syntax-title {
+        font-size: 1.1rem;
+        font-weight: bold;
+        background-color: #ffebee;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        line-height: 1.4;
+    }
+    .sentence-block {
+        background-color: #fafafa;
+        border: 1px solid #eeeeee;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    .jp-text {
+        font-size: 1rem;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+    .vn-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .vn-text {
+        font-size: 0.95rem;
+        color: #1565c0;
+        flex: 1;
+    }
+    .btn-speaker {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 5px;
+        transition: transform 0.1s;
+    }
+    .btn-speaker:active {
+        transform: scale(0.9);
+    }
+    .nav-buttons {
+        display: flex;
+        justify-content: space-between;
+        padding-top: 15px;
+        border-top: 1px solid #eeeeee;
+        margin-top: auto;
+    }
+    .btn {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        width: 45%;
+        text-align: center;
+    }
+    .btn-next {
+        background-color: var(--primary-color);
+        color: white;
+        margin-left: auto;
+    }
+    .btn-prev {
+        background-color: #e0e0e0;
+        color: var(--text-main);
+    }
+    
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1; 
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #ccc; 
+        border-radius: 3px;
+    }
+</style>
+</head>
+<body>
+
+<div id="app-container">
+    <div class="page active title-page" id="page-home">
+        <h2>🇻🇳 みんなの日本語<br>ベトナム語変換 🇯🇵</h2>
+        <p>〜 第1課 - 第25課 〜<br>学習する課を選んでください。</p>
+        
+        <div class="lesson-grid" id="lesson-grid">
+        </div>
+    </div>
+
+    <div class="page" id="page-lesson">
+        <div class="header">
+            <button class="btn-home" onclick="goHome()">🏠</button>
+            <h1 id="lesson-title">第X課 練習A</h1>
+        </div>
+        <div class="content" id="lesson-content">
+        </div>
+        <div class="nav-buttons">
+            <button class="btn btn-prev" id="btn-prev" onclick="prevSyntax()">⬅ 戻る</button>
+            <button class="btn btn-next" id="btn-next" onclick="nextSyntax()">次へ ➡</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const lessonData = {"1": [{"syntax_jp": "1. N1 は N2 です", "syntax_vn": "(N1 là N2)", "sentences": [{"jp": "わたしは マイク・ミラー です。", "vn": "Tôi là Mike Miller."}, {"jp": "わたしは 会社員 です。", "vn": "Tôi là nhân viên công ty."}, {"jp": "わたしは アメリカ人 です。", "vn": "Tôi là người Mỹ."}]}, {"syntax_jp": "2. N1 は N2 じゃありません", "syntax_vn": "(N1 không phải là N2)", "sentences": [{"jp": "サントスさんは 学生 じゃありません。", "vn": "Anh Santos không phải là học sinh."}, {"jp": "サントスさんは エンジニア じゃありません。", "vn": "Anh Santos không phải là kỹ sư."}, {"jp": "サントスさんは ドイツ人 じゃありません。", "vn": "Anh Santos không phải là người Đức."}]}, {"syntax_jp": "3. 〜は 〜ですか／だれですか", "syntax_vn": "(~ có phải là ~ không? / ~ là ai?)", "sentences": [{"jp": "あの人は 木村さん ですか。", "vn": "Người kia có phải là anh Kimura không?"}, {"jp": "あの人は マリアさん ですか。", "vn": "Người kia có phải là chị Maria không?"}, {"jp": "あの人は だれ ですか。", "vn": "Người kia là ai vậy?"}]}, {"syntax_jp": "4. 〜も 〜です", "syntax_vn": "(~ cũng là ~)", "sentences": [{"jp": "サントスさんは ブラジル人 です。", "vn": "Anh Santos là người Brazil."}, {"jp": "マリアさんも ブラジル人 です。", "vn": "Chị Maria cũng là người Brazil."}, {"jp": "あの人も ブラジル人 です。", "vn": "Người kia cũng là người Brazil."}]}, {"syntax_jp": "5. N1 の N2", "syntax_vn": "(N2 của N1)", "sentences": [{"jp": "ミラーさんは IMCの 社員 です。", "vn": "Anh Miller là nhân viên của IMC."}, {"jp": "カリナさんは 富士大学の 学生 です。", "vn": "Chị Karina là sinh viên của Đại học Fuji."}, {"jp": "ワットさんは さくら大学の 先生 です。", "vn": "Thầy Watt là giáo viên của Đại học Sakura."}]}], "2": [{"syntax_jp": "1. これ / それ / あれ は N です", "syntax_vn": "(Cái này / Cái đó / Cái kia là N)", "sentences": [{"jp": "これは 辞書 です。", "vn": "Đây là cuốn từ điển."}, {"jp": "それは 傘 です。", "vn": "Đó là cái ô."}, {"jp": "あれは 本 です。", "vn": "Kia là quyển sách."}]}, {"syntax_jp": "2. この / その / あの N は N2 です", "syntax_vn": "(N này / N đó / N kia là N2)", "sentences": [{"jp": "この 本は わたしのです。", "vn": "Quyển sách này là của tôi."}, {"jp": "その 傘は あなたのですか。", "vn": "Cái ô đó là của bạn phải không?"}, {"jp": "あの 辞書は 先生のです。", "vn": "Cuốn từ điển kia là của giáo viên."}]}, {"syntax_jp": "3. N1 ですか、 N2 ですか", "syntax_vn": "(Là N1 hay là N2?)", "sentences": [{"jp": "これは 「あ」 ですか、「お」 ですか。", "vn": "Đây là chữ 'a' hay chữ 'o'?"}, {"jp": "それは シャープペンシルですか、ボールペンですか。", "vn": "Đó là bút chì kim hay bút bi?"}, {"jp": "あれは 1ですか、7ですか。", "vn": "Kia là số 1 hay số 7?"}]}, {"syntax_jp": "4. N1 の N2 (内容・所属)", "syntax_vn": "(N2 về N1 / N2 của N1)", "sentences": [{"jp": "これは コンピューターの 本 です。", "vn": "Đây là quyển sách về máy tính."}, {"jp": "これは わたしの 傘 です。", "vn": "Đây là cái ô của tôi."}, {"jp": "あれは だれの かばん ですか。", "vn": "Kia là cặp của ai vậy?"}]}], "3": [{"syntax_jp": "1. ここ / そこ / あそこ は N です", "syntax_vn": "(Chỗ này / Chỗ đó / Chỗ kia là N)", "sentences": [{"jp": "ここは 食堂 です。", "vn": "Chỗ này là nhà ăn."}, {"jp": "そこは トイレ です。", "vn": "Chỗ đó là nhà vệ sinh."}, {"jp": "あそこは 事務所 です。", "vn": "Chỗ kia là văn phòng."}]}, {"syntax_jp": "2. N は ここ / そこ / あそこ です", "syntax_vn": "(N ở chỗ này / chỗ đó / chỗ kia)", "sentences": [{"jp": "電話は ここです。", "vn": "Điện thoại ở đây."}, {"jp": "山田さんは あそこです。", "vn": "Anh Yamada ở kia."}, {"jp": "トイレは どこですか。", "vn": "Nhà vệ sinh ở đâu?"}]}, {"syntax_jp": "3. N1 の N2 (国・会社)", "syntax_vn": "(N2 của/sản xuất tại N1)", "sentences": [{"jp": "これは 日本の 自動車 です。", "vn": "Đây là ô tô của Nhật Bản."}, {"jp": "それは どこの カメラ ですか。", "vn": "Đó là máy ảnh của nước nào?"}, {"jp": "これは IMCの コンピューター です。", "vn": "Đây là máy tính của công ty IMC."}]}, {"syntax_jp": "4. いくら ですか", "syntax_vn": "(Bao nhiêu tiền?)", "sentences": [{"jp": "この 辞書は いくら ですか。", "vn": "Quyển từ điển này bao nhiêu tiền?"}, {"jp": "それは 3,000円 です。", "vn": "Cái đó 3,000 yên."}, {"jp": "あれは 10,000円 です。", "vn": "Cái kia 10,000 yên."}]}], "4": [{"syntax_jp": "1. 今 〜時 〜分 です", "syntax_vn": "(Bây giờ là ~ giờ ~ phút)", "sentences": [{"jp": "今 4時 5分 です。", "vn": "Bây giờ là 4 giờ 5 phút."}, {"jp": "東京は 今 何時 ですか。", "vn": "Tokyo bây giờ là mấy giờ?"}, {"jp": "今は 午前 9時 半 です。", "vn": "Bây giờ là 9 giờ rưỡi sáng."}]}, {"syntax_jp": "2. Vます / Vません / Vました / Vませんでした", "syntax_vn": "(Làm / Không làm / Đã làm / Đã không làm)", "sentences": [{"jp": "わたしは 毎日 勉強します。", "vn": "Tôi học bài mỗi ngày."}, {"jp": "きのう 勉強しました。", "vn": "Hôm qua tôi đã học bài."}, {"jp": "きのう 勉強しませんでした。", "vn": "Hôm qua tôi đã không học bài."}]}, {"syntax_jp": "3. 〜から 〜まで", "syntax_vn": "(Từ ~ đến ~)", "sentences": [{"jp": "9時から 5時まで 働きます。", "vn": "Tôi làm việc từ 9 giờ đến 5 giờ."}, {"jp": "昼休みは 12時から 1時まで です。", "vn": "Giờ nghỉ trưa từ 12 giờ đến 1 giờ."}, {"jp": "銀行は 何時から 何時まで ですか。", "vn": "Ngân hàng mở cửa từ mấy giờ đến mấy giờ?"}]}], "5": [{"syntax_jp": "1. N(場所) へ 行きます/来ます/帰ります", "syntax_vn": "(Đi / Đến / Về N (địa điểm))", "sentences": [{"jp": "わたしは 京都へ 行きます。", "vn": "Tôi đi Kyoto."}, {"jp": "日曜日 どこへ 行きますか。", "vn": "Chủ nhật bạn đi đâu?"}, {"jp": "うちへ 帰ります。", "vn": "Tôi về nhà."}]}, {"syntax_jp": "2. どこ[へ]も 行きません", "syntax_vn": "(Không đi đâu cả)", "sentences": [{"jp": "どこも 行きません。", "vn": "Tôi không đi đâu cả."}, {"jp": "きのう どこも 行きませんでした。", "vn": "Hôm qua tôi không đi đâu cả."}]}, {"syntax_jp": "3. N(乗り物) で 行きます", "syntax_vn": "(Đi bằng N (phương tiện))", "sentences": [{"jp": "わたしは 電車で 行きます。", "vn": "Tôi đi bằng tàu điện."}, {"jp": "タクシーで うちへ 帰ります。", "vn": "Tôi về nhà bằng taxi."}, {"jp": "何で 東京へ 行きますか。", "vn": "Bạn đi Tokyo bằng gì?"}]}, {"syntax_jp": "4. N(人/動物) と 行きます", "syntax_vn": "(Đi cùng N (người/động vật))", "sentences": [{"jp": "家族と 日本へ 来ました。", "vn": "Tôi đã đến Nhật cùng gia đình."}, {"jp": "だれと 東京へ 行きますか。", "vn": "Bạn đi Tokyo với ai?"}, {"jp": "一人で 行きます。", "vn": "Tôi đi một mình."}]}], "6": [{"syntax_jp": "1. N を Vます", "syntax_vn": "(Làm N (đối tượng))", "sentences": [{"jp": "わたしは ジュースを 飲みます。", "vn": "Tôi uống nước hoa quả."}, {"jp": "わたしは ごはんを 食べます。", "vn": "Tôi ăn cơm."}, {"jp": "なにを 買いますか。", "vn": "Bạn mua gì?"}]}, {"syntax_jp": "2. N(場所) で Vます", "syntax_vn": "(Làm V ở N (địa điểm))", "sentences": [{"jp": "駅で 新聞を 買います。", "vn": "Tôi mua báo ở nhà ga."}, {"jp": "どこで その写真を 撮りましたか。", "vn": "Bạn đã chụp bức ảnh đó ở đâu?"}, {"jp": "レストランで 晩ごはんを 食べます。", "vn": "Tôi ăn tối ở nhà hàng."}]}, {"syntax_jp": "3. Vませんか", "syntax_vn": "(Cùng làm V không? - Rủ rê)", "sentences": [{"jp": "いっしょに 京都へ 行きませんか。", "vn": "Cùng đi Kyoto không?"}, {"jp": "いっしょに ビールを 飲みませんか。", "vn": "Cùng uống bia không?"}, {"jp": "ええ、いいですね。", "vn": "Vâng, được đấy."}]}, {"syntax_jp": "4. Vましょう", "syntax_vn": "(Cùng làm V nào - Đề nghị)", "sentences": [{"jp": "ちょっと 休みましょう。", "vn": "Cùng nghỉ một chút nào."}, {"jp": "いっしょに 昼ごはんを 食べましょう。", "vn": "Cùng ăn trưa nào."}, {"jp": "はい、食べましょう。", "vn": "Vâng, cùng ăn nào."}]}], "7": [{"syntax_jp": "1. N(道具/手段) で Vます", "syntax_vn": "(Làm V bằng N (công cụ/phương tiện))", "sentences": [{"jp": "はしで ごはんを 食べます。", "vn": "Tôi ăn cơm bằng đũa."}, {"jp": "日本語で レポートを 書きます。", "vn": "Tôi viết báo cáo bằng tiếng Nhật."}, {"jp": "何で ごはんを 食べますか。", "vn": "Bạn ăn cơm bằng gì?"}]}, {"syntax_jp": "2. 「〜」は 〜語で 何ですか", "syntax_vn": "('~' trong tiếng ~ là gì?)", "sentences": [{"jp": "「ありがとう」は 英語で 何ですか。", "vn": "'Arigatou' trong tiếng Anh là gì?"}, {"jp": "「Thank you」です。", "vn": "Là 'Thank you'."}, {"jp": "これは 日本語で 何ですか。", "vn": "Cái này trong tiếng Nhật là gì?"}]}, {"syntax_jp": "3. N(人) に N を あげます", "syntax_vn": "(Cho / Tặng N (người) N (vật))", "sentences": [{"jp": "わたしは 木村さんに 花を あげます。", "vn": "Tôi tặng hoa cho chị Kimura."}, {"jp": "イーさんに 本を 貸します。", "vn": "Tôi cho anh Lee mượn sách."}, {"jp": "山田さんに 英語を 教えます。", "vn": "Tôi dạy tiếng Anh cho anh Yamada."}]}, {"syntax_jp": "4. N(人) に N を もらいます", "syntax_vn": "(Nhận N (vật) từ N (người))", "sentences": [{"jp": "わたしは カリナさんに チョコレートを もらいました。", "vn": "Tôi đã nhận socola từ chị Karina."}, {"jp": "サントスさんに CDを 借りました。", "vn": "Tôi đã mượn CD từ anh Santos."}, {"jp": "ワンさんに 中国語を 習います。", "vn": "Tôi học tiếng Trung từ anh Wang."}]}], "8": [{"syntax_jp": "1. Aいです / Naです", "syntax_vn": "(Tính từ đuôi i / Tính từ đuôi na)", "sentences": [{"jp": "桜は きれいです。", "vn": "Hoa anh đào thì đẹp."}, {"jp": "富士山は 高いです。", "vn": "Núi Phú Sĩ thì cao."}, {"jp": "この 町は にぎやかです。", "vn": "Thành phố này thì nhộn nhịp."}]}, {"syntax_jp": "2. Aくないです / Naじゃありません", "syntax_vn": "(Không A / Không Na - Phủ định)", "sentences": [{"jp": "あの 映画は おもしろくないです。", "vn": "Bộ phim đó không thú vị."}, {"jp": "この 本は 新しくないです。", "vn": "Quyển sách này không mới."}, {"jp": "この 部屋は 静かじゃありません。", "vn": "Căn phòng này không yên tĩnh."}]}, {"syntax_jp": "3. どんな N / 〜は どうですか", "syntax_vn": "(N như thế nào? / ~ thì thế nào?)", "sentences": [{"jp": "日本の 生活は どうですか。", "vn": "Cuộc sống ở Nhật thế nào?"}, {"jp": "楽しいです。", "vn": "Rất vui."}, {"jp": "東京は どんな 町ですか。", "vn": "Tokyo là thành phố như thế nào?"}]}], "9": [{"syntax_jp": "1. N が 好きです/嫌いです", "syntax_vn": "(Thích N / Ghét N)", "sentences": [{"jp": "わたしは イタリア料理が 好きです。", "vn": "Tôi thích món ăn Ý."}, {"jp": "スポーツが 好きですか。", "vn": "Bạn có thích thể thao không?"}, {"jp": "いいえ、好きじゃありません。", "vn": "Không, tôi không thích."}]}, {"syntax_jp": "2. N が 上手です/下手です", "syntax_vn": "(Giỏi N / Kém N)", "sentences": [{"jp": "マリアさんは ダンスが 上手です。", "vn": "Chị Maria nhảy giỏi."}, {"jp": "わたしは 歌が 下手です。", "vn": "Tôi hát kém."}, {"jp": "日本語が 上手ですね。", "vn": "Tiếng Nhật của bạn giỏi nhỉ."}]}, {"syntax_jp": "3. N が わかります/あります", "syntax_vn": "(Hiểu N / Có N)", "sentences": [{"jp": "わたしは 英語が よく わかります。", "vn": "Tôi hiểu tiếng Anh rất rõ."}, {"jp": "日本語が 少し わかります。", "vn": "Tôi hiểu một chút tiếng Nhật."}, {"jp": "わたしは 車が あります。", "vn": "Tôi có ô tô."}]}, {"syntax_jp": "4. 〜から、〜 (理由)", "syntax_vn": "(Vì ~, nên ~)", "sentences": [{"jp": "時間が ありませんから、新聞を 読みません。", "vn": "Vì không có thời gian nên tôi không đọc báo."}, {"jp": "どうして 朝ごはんを 食べませんでしたか。", "vn": "Tại sao bạn không ăn sáng?"}, {"jp": "おなかが 痛かったですから。", "vn": "Vì tôi bị đau bụng."}]}], "10": [{"syntax_jp": "1. N が あります / います", "syntax_vn": "(Có N (đồ vật) / Có N (người/động vật))", "sentences": [{"jp": "あそこに コンビニが あります。", "vn": "Ở kia có cửa hàng tiện lợi."}, {"jp": "ロビーに 佐藤さんが います。", "vn": "Ở sảnh có anh Sato."}, {"jp": "机の上に 本が あります。", "vn": "Trên bàn có quyển sách."}]}, {"syntax_jp": "2. N1(場所) に N2 が あります/います", "syntax_vn": "(Ở N1 có N2)", "sentences": [{"jp": "あそこに だれが いますか。", "vn": "Ở kia có ai vậy?"}, {"jp": "部屋に なにが ありますか。", "vn": "Trong phòng có cái gì vậy?"}, {"jp": "庭に 猫が います。", "vn": "Trong vườn có con mèo."}]}, {"syntax_jp": "3. N は N(場所) に あります/います", "syntax_vn": "(N ở chỗ N(địa điểm))", "sentences": [{"jp": "東京ディズニーランドは 千葉県に あります。", "vn": "Tokyo Disneyland ở tỉnh Chiba."}, {"jp": "ミラーさんは どこに いますか。", "vn": "Anh Miller ở đâu?"}, {"jp": "会議室に います。", "vn": "Anh ấy ở phòng họp."}]}], "11": [{"syntax_jp": "1. N が 〜つ あります", "syntax_vn": "(Có ~ cái N)", "sentences": [{"jp": "机の上に りんごが 3つ あります。", "vn": "Trên bàn có 3 quả táo."}, {"jp": "みかんを 5つ 買いました。", "vn": "Tôi đã mua 5 quả quýt."}, {"jp": "いすは いくつ ありますか。", "vn": "Có bao nhiêu cái ghế?"}]}, {"syntax_jp": "2. 〜人 / 〜枚 / 〜台 などの助数詞", "syntax_vn": "(Từ chỉ số lượng)", "sentences": [{"jp": "80円の 切手を 5枚 買いました。", "vn": "Tôi đã mua 5 cái tem 80 yên."}, {"jp": "この クラスに 留学生が 4人 います。", "vn": "Lớp này có 4 du học sinh."}, {"jp": "自転車が 2台 あります。", "vn": "Có 2 chiếc xe đạp."}]}, {"syntax_jp": "3. N(期間) に 〜回 Vます", "syntax_vn": "(Làm V ~ lần trong thời gian N)", "sentences": [{"jp": "1か月に 2回 映画を 見ます。", "vn": "Một tháng tôi xem phim 2 lần."}, {"jp": "1週間に 何回 テニスを しますか。", "vn": "Một tuần bạn chơi tennis mấy lần?"}, {"jp": "1年に 1回 国へ 帰ります。", "vn": "Một năm tôi về nước 1 lần."}]}], "12": [{"syntax_jp": "1. N / Na でした", "syntax_vn": "(Đã là N / Na - Quá khứ)", "sentences": [{"jp": "きのうは 雨でした。", "vn": "Hôm qua trời đã mưa."}, {"jp": "きのうの 試験は 簡単でした。", "vn": "Kỳ thi hôm qua thì dễ."}, {"jp": "きのうは 休みじゃありませんでした。", "vn": "Hôm qua không phải là ngày nghỉ."}]}, {"syntax_jp": "2. Aかったです / Aくなかったです", "syntax_vn": "(Đã A / Đã không A - Quá khứ của tính từ i)", "sentences": [{"jp": "きのうは 暑かったです。", "vn": "Hôm qua trời đã nóng."}, {"jp": "旅行は 楽しかったです。", "vn": "Chuyến du lịch đã rất vui."}, {"jp": "パーティーは あまり 楽しくなかったです。", "vn": "Bữa tiệc đã không vui lắm."}]}, {"syntax_jp": "3. N1 は N2 より A/Na です", "syntax_vn": "(N1 thì A/Na hơn N2)", "sentences": [{"jp": "北海道は 九州より 大きいです。", "vn": "Hokkaido lớn hơn Kyushu."}, {"jp": "この 車は あの 車より 静かです。", "vn": "Chiếc xe này yên tĩnh hơn chiếc xe kia."}, {"jp": "新幹線は 電車より 速いです。", "vn": "Shinkansen nhanh hơn tàu điện."}]}, {"syntax_jp": "4. N1 と N2 と どちらが A/Na ですか", "syntax_vn": "(N1 và N2 cái nào A/Na hơn?)", "sentences": [{"jp": "サッカーと 野球と どちらが おもしろいですか。", "vn": "Bóng đá và bóng chày môn nào thú vị hơn?"}, {"jp": "サッカーの ほうが おもしろいです。", "vn": "Bóng đá thú vị hơn."}, {"jp": "どちらも おもしろいです。", "vn": "Cả hai đều thú vị."}]}], "13": [{"syntax_jp": "1. N が ほしいです", "syntax_vn": "(Muốn có N)", "sentences": [{"jp": "わたしは パソコンが ほしいです。", "vn": "Tôi muốn có máy tính cá nhân."}, {"jp": "今 なにが いちばん ほしいですか。", "vn": "Bây giờ bạn muốn cái gì nhất?"}, {"jp": "新しい 携帯電話が ほしいです。", "vn": "Tôi muốn một chiếc điện thoại di động mới."}]}, {"syntax_jp": "2. Vますたいです", "syntax_vn": "(Muốn làm V)", "sentences": [{"jp": "わたしは 沖縄へ 行きたいです。", "vn": "Tôi muốn đi Okinawa."}, {"jp": "神戸で なにを 買いたいですか。", "vn": "Bạn muốn mua gì ở Kobe?"}, {"jp": "靴を 買いたいです。", "vn": "Tôi muốn mua giày."}]}, {"syntax_jp": "3. N(場所) へ Vます/N に 行きます", "syntax_vn": "(Đi đến N để làm V)", "sentences": [{"jp": "デパートへ 服を 買いに 行きます。", "vn": "Tôi đi đến cửa hàng bách hóa để mua quần áo."}, {"jp": "日本へ 美術を 勉強に 来ました。", "vn": "Tôi đã đến Nhật để học mỹ thuật."}, {"jp": "どこへ 遊びに 行きますか。", "vn": "Bạn sẽ đi đâu chơi?"}]}], "14": [{"syntax_jp": "1. Vてください", "syntax_vn": "(Hãy làm V)", "sentences": [{"jp": "辞書を 貸してください。", "vn": "Hãy cho tôi mượn từ điển."}, {"jp": "ゆっくり 話してください。", "vn": "Hãy nói chậm lại."}, {"jp": "ここに 名前を 書いてください。", "vn": "Hãy viết tên vào đây."}]}, {"syntax_jp": "2. Vています", "syntax_vn": "(Đang làm V)", "sentences": [{"jp": "ミラーさんは 今 電話を かけています。", "vn": "Anh Miller bây giờ đang gọi điện thoại."}, {"jp": "今 雨が 降っていますか。", "vn": "Bây giờ trời có đang mưa không?"}, {"jp": "はい、降っています。", "vn": "Vâng, trời đang mưa."}]}, {"syntax_jp": "3. Vましょうか", "syntax_vn": "(Để tôi làm V nhé?)", "sentences": [{"jp": "タクシーを 呼びましょうか。", "vn": "Để tôi gọi taxi nhé?"}, {"jp": "荷物を 持ちましょうか。", "vn": "Để tôi mang hành lý cho nhé?"}, {"jp": "ええ、お願いします。", "vn": "Vâng, nhờ bạn."}]}], "15": [{"syntax_jp": "1. Vてもいいです", "syntax_vn": "(Làm V cũng được / Có thể làm V)", "sentences": [{"jp": "写真を 撮ってもいいです。", "vn": "Có thể chụp ảnh."}, {"jp": "この カタログを もらってもいいですか。", "vn": "Tôi lấy cuốn catalogue này có được không?"}, {"jp": "ええ、いいですよ。", "vn": "Vâng, được chứ."}]}, {"syntax_jp": "2. Vてはいけません", "syntax_vn": "(Không được làm V)", "sentences": [{"jp": "ここで たばこを 吸ってはいけません。", "vn": "Không được hút thuốc ở đây."}, {"jp": "ここに 車を 止めてはいけません。", "vn": "Không được đỗ xe ở đây."}, {"jp": "先生、ここで 遊んではいけませんか。", "vn": "Thưa thầy, không được chơi ở đây ạ?"}]}, {"syntax_jp": "3. Vています (状態/習慣)", "syntax_vn": "(Trạng thái / Thói quen)", "sentences": [{"jp": "わたしは 結婚しています。", "vn": "Tôi đã kết hôn."}, {"jp": "ミラーさんは IMCで 働いています。", "vn": "Anh Miller đang làm việc tại IMC."}, {"jp": "わたしは 大阪に 住んでいます。", "vn": "Tôi đang sống ở Osaka."}]}], "16": [{"syntax_jp": "1. Vて、Vて、〜", "syntax_vn": "(Làm V, làm V, rồi ~)", "sentences": [{"jp": "朝 ジョギングをして、シャワーを浴びて、会社へ 行きます。", "vn": "Buổi sáng tôi chạy bộ, tắm vòi sen, rồi đi làm."}, {"jp": "きのう 神戸へ行って、映画を見て、お茶を 飲みました。", "vn": "Hôm qua tôi đã đi Kobe, xem phim, rồi uống trà."}]}, {"syntax_jp": "2. Aくて / Naで / Nで", "syntax_vn": "(A và / Na và / N và)", "sentences": [{"jp": "ミラーさんは 若くて、元気です。", "vn": "Anh Miller trẻ và khỏe."}, {"jp": "カリナさんは 学生で、マリアさんは 主婦です。", "vn": "Karina là sinh viên, còn Maria là nội trợ."}]}, {"syntax_jp": "3. V1てから、V2", "syntax_vn": "(Sau khi làm V1 thì làm V2)", "sentences": [{"jp": "コンサートが 終わってから、レストランで 食事しました。", "vn": "Sau khi buổi hòa nhạc kết thúc, chúng tôi đã ăn uống ở nhà hàng."}, {"jp": "仕事が 終わってから、飲みに行きませんか。", "vn": "Sau khi xong việc, đi uống nước không?"}]}, {"syntax_jp": "4. N1 は N2 が A/Na です", "syntax_vn": "(N1 có N2 mang tính chất A/Na)", "sentences": [{"jp": "大阪は 食べ物が おいしいです。", "vn": "Osaka có đồ ăn ngon."}, {"jp": "マリアさんは 髪が 長いです。", "vn": "Chị Maria có mái tóc dài."}]}], "17": [{"syntax_jp": "1. Vないでください", "syntax_vn": "(Xin đừng làm V)", "sentences": [{"jp": "ここで 写真を 撮らないでください。", "vn": "Xin đừng chụp ảnh ở đây."}, {"jp": "心配しないでください。", "vn": "Xin đừng lo lắng."}]}, {"syntax_jp": "2. Vなければなりません", "syntax_vn": "(Phải làm V)", "sentences": [{"jp": "薬を 飲まなければなりません。", "vn": "Phải uống thuốc."}, {"jp": "毎日 漢字を 勉強しなければなりません。", "vn": "Mỗi ngày phải học chữ Hán."}]}, {"syntax_jp": "3. Vなくてもいいです", "syntax_vn": "(Không cần làm V cũng được)", "sentences": [{"jp": "明日は 来なくてもいいです。", "vn": "Ngày mai không cần đến cũng được."}, {"jp": "靴を 脱がなくてもいいです。", "vn": "Không cần cởi giày ra cũng được."}]}], "18": [{"syntax_jp": "1. Vることができます", "syntax_vn": "(Có thể làm V)", "sentences": [{"jp": "ミラーさんは 漢字を 読むことが できます。", "vn": "Anh Miller có thể đọc chữ Hán."}, {"jp": "ここで 切符を 買うことが できますか。", "vn": "Có thể mua vé ở đây không?"}]}, {"syntax_jp": "2. わたしの趣味は Vることです", "syntax_vn": "(Sở thích của tôi là làm V)", "sentences": [{"jp": "わたしの趣味は 映画を 見ることです。", "vn": "Sở thích của tôi là xem phim."}, {"jp": "わたしの趣味は 写真を 撮ることです。", "vn": "Sở thích của tôi là chụp ảnh."}]}, {"syntax_jp": "3. V1る/Nの/数量の まえに、V2", "syntax_vn": "(Trước khi ~, làm ~)", "sentences": [{"jp": "日本へ 来るまえに、日本語を 勉強しました。", "vn": "Trước khi đến Nhật, tôi đã học tiếng Nhật."}, {"jp": "食事のまえに、手を 洗います。", "vn": "Trước khi ăn cơm, tôi rửa tay."}]}], "19": [{"syntax_jp": "1. Vたことが あります", "syntax_vn": "(Đã từng làm V)", "sentences": [{"jp": "わたしは 馬に 乗ったことが あります。", "vn": "Tôi đã từng cưỡi ngựa."}, {"jp": "日本へ 行ったことが ありますか。", "vn": "Bạn đã từng đến Nhật chưa?"}]}, {"syntax_jp": "2. Vたり、Vたり します", "syntax_vn": "(Lúc thì làm V, lúc thì làm V)", "sentences": [{"jp": "日曜日は テニスをしたり、映画を見たり します。", "vn": "Ngày chủ nhật tôi lúc thì chơi tennis, lúc thì xem phim."}, {"jp": "きのうは 買い物をしたり、音楽を聞いたり しました。", "vn": "Hôm qua tôi đã đi mua sắm, nghe nhạc..."}]}, {"syntax_jp": "3. Aく / Naに / Nに なります", "syntax_vn": "(Trở nên / Trở thành)", "sentences": [{"jp": "寒く なりました。", "vn": "Trời đã trở lạnh."}, {"jp": "テレサちゃんは 9歳に なりました。", "vn": "Bé Teresa đã lên 9 tuổi."}]}], "21": [{"syntax_jp": "1. 普通形 と 思います", "syntax_vn": "(Tôi nghĩ là ~)", "sentences": [{"jp": "明日 雨が 降ると 思います。", "vn": "Tôi nghĩ ngày mai trời sẽ mưa."}, {"jp": "日本語は 難しいと 思います。", "vn": "Tôi nghĩ tiếng Nhật khó."}]}, {"syntax_jp": "2. 「文」/普通形 と 言いました", "syntax_vn": "(Đã nói là ~)", "sentences": [{"jp": "ミラーさんは 「来週 東京へ 行く」と 言いました。", "vn": "Anh Miller đã nói là 'Tuần sau tôi sẽ đi Tokyo'."}, {"jp": "先生は 明日 テストが あると 言いました。", "vn": "Thầy giáo đã nói là ngày mai có bài kiểm tra."}]}, {"syntax_jp": "3. 普通形 でしょう？", "syntax_vn": "(~ đúng không? / ~ nhỉ?)", "sentences": [{"jp": "明日の パーティーに 行くでしょう？", "vn": "Ngày mai bạn sẽ đi dự tiệc đúng không?"}, {"jp": "北海道は 寒かったでしょう？", "vn": "Hokkaido đã rất lạnh đúng không?"}]}], "22": [{"syntax_jp": "1. 名詞修飾", "syntax_vn": "(Mệnh đề bổ nghĩa cho danh từ)", "sentences": [{"jp": "これは ミラーさんが 作った ケーキです。", "vn": "Đây là chiếc bánh kem mà anh Miller đã làm."}, {"jp": "あそこで 新聞を 読んでいる 人は マリアさんです。", "vn": "Người đang đọc báo ở đằng kia là chị Maria."}, {"jp": "わたしは 庭が ある 家が ほしいです。", "vn": "Tôi muốn một ngôi nhà có sân vườn."}, {"jp": "きのう 買った 傘を なくしました。", "vn": "Tôi đã làm mất chiếc ô mua hôm qua."}]}], "23": [{"syntax_jp": "1. V辞書形/Vない形/Aい/Naな/Nの とき、〜", "syntax_vn": "(Khi ~)", "sentences": [{"jp": "図書館で 本を 借りる とき、カードが 要ります。", "vn": "Khi mượn sách ở thư viện, cần có thẻ."}, {"jp": "使い方が わからない とき、わたしに 聞いてください。", "vn": "Khi không biết cách sử dụng, hãy hỏi tôi."}, {"jp": "妻が 病気の とき、わたしが 料理を します。", "vn": "Khi vợ ốm, tôi sẽ nấu ăn."}]}, {"syntax_jp": "2. V辞書形/た形 と、〜", "syntax_vn": "(Hễ mà / Nếu ~ thì)", "sentences": [{"jp": "この ボタンを 押すと、お釣りが 出ます。", "vn": "Hễ bấm nút này thì tiền thối sẽ chạy ra."}, {"jp": "右へ 曲がると、郵便局が あります。", "vn": "Rẽ phải thì sẽ có bưu điện."}]}], "24": [{"syntax_jp": "1. くれます", "syntax_vn": "(Cho tôi)", "sentences": [{"jp": "佐藤さんは わたしに クリスマスカードを くれました。", "vn": "Chị Sato đã tặng tôi thiệp Giáng sinh."}, {"jp": "だれが この 辞書を くれましたか。", "vn": "Ai đã cho bạn cuốn từ điển này?"}]}, {"syntax_jp": "2. Vて もらいます", "syntax_vn": "(Nhận được việc ai đó làm cho)", "sentences": [{"jp": "わたしは 木村さんに 傘を 貸して もらいました。", "vn": "Tôi đã được chị Kimura cho mượn ô."}, {"jp": "わたしは 鈴木さんに 日本語を 教えて もらいました。", "vn": "Tôi đã được anh Suzuki dạy tiếng Nhật cho."}]}, {"syntax_jp": "3. Vて くれます", "syntax_vn": "(Ai đó làm việc gì cho tôi)", "sentences": [{"jp": "家内は わたしに セーターを 送って くれました。", "vn": "Vợ tôi đã gửi áo len cho tôi."}, {"jp": "友達が 引っ越しを 手伝って くれました。", "vn": "Bạn bè đã giúp tôi chuyển nhà."}]}, {"syntax_jp": "4. Vて あげます", "syntax_vn": "(Làm việc gì cho ai đó)", "sentences": [{"jp": "わたしは 木村さんに 傘を 貸して あげました。", "vn": "Tôi đã cho chị Kimura mượn ô."}, {"jp": "わたしは おじいさんに 道を 教えて あげました。", "vn": "Tôi đã chỉ đường cho ông cụ."}]}], "25": [{"syntax_jp": "1. た形 ら、〜", "syntax_vn": "(Nếu / Sau khi ~)", "sentences": [{"jp": "お金が あったら、旅行します。", "vn": "Nếu có tiền, tôi sẽ đi du lịch."}, {"jp": "10時に なったら、出かけましょう。", "vn": "Đến 10 giờ thì chúng ta xuất phát nhé."}]}, {"syntax_jp": "2. Vて/Aくて/Naで/Nで も、〜", "syntax_vn": "(Cho dù ~)", "sentences": [{"jp": "雨が 降っても、洗濯します。", "vn": "Cho dù trời mưa, tôi vẫn giặt quần áo."}, {"jp": "眠くても、勉強しなければなりません。", "vn": "Cho dù buồn ngủ, vẫn phải học bài."}, {"jp": "日曜日でも、働きます。", "vn": "Cho dù là ngày chủ nhật, tôi vẫn làm việc."}]}]};
+    
+    let currentLesson = 1;
+    let currentSyntaxIndex = 0;
+
+    function initHome() {
+        const grid = document.getElementById('lesson-grid');
+        // Retrieve keys and sort them numerically
+        const lessons = Object.keys(lessonData).map(Number).sort((a,b) => a - b);
+        lessons.forEach(i => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-lesson';
+            btn.innerText = `第${i}課`;
+            btn.onclick = () => startLesson(i);
+            grid.appendChild(btn);
+        });
+    }
+
+    function startLesson(lessonNum) {
+        currentLesson = lessonNum;
+        currentSyntaxIndex = 0;
+        
+        document.getElementById('page-home').classList.remove('active');
+        document.getElementById('page-lesson').classList.add('active');
+        
+        document.getElementById('lesson-title').innerText = `第${lessonNum}課 練習A`;
+        
+        renderSyntax();
+    }
+
+    function goHome() {
+        document.getElementById('page-lesson').classList.remove('active');
+        document.getElementById('page-home').classList.add('active');
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+        }
+    }
+
+    function renderSyntax() {
+        const contentDiv = document.getElementById('lesson-content');
+        contentDiv.innerHTML = ''; 
+        
+        const syntaxes = lessonData[currentLesson];
+        const currentData = syntaxes[currentSyntaxIndex];
+        
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'syntax-title';
+        titleDiv.innerHTML = `${currentData.syntax_jp}<br><span style="font-size:0.9rem; font-weight:normal;">${currentData.syntax_vn}</span>`;
+        contentDiv.appendChild(titleDiv);
+        
+        currentData.sentences.forEach(sentence => {
+            const block = document.createElement('div');
+            block.className = 'sentence-block';
+            
+            const jpDiv = document.createElement('div');
+            jpDiv.className = 'jp-text';
+            jpDiv.innerText = `🇯🇵 ${sentence.jp}`;
+            
+            const vnRow = document.createElement('div');
+            vnRow.className = 'vn-row';
+            
+            const vnText = document.createElement('div');
+            vnText.className = 'vn-text';
+            vnText.innerText = `🇻🇳 ${sentence.vn}`;
+            
+            const btnSpk = document.createElement('button');
+            btnSpk.className = 'btn-speaker';
+            btnSpk.innerText = '🔊';
+            btnSpk.onclick = () => speakVN(sentence.vn);
+            
+            vnRow.appendChild(vnText);
+            vnRow.appendChild(btnSpk);
+            
+            block.appendChild(jpDiv);
+            block.appendChild(vnRow);
+            
+            contentDiv.appendChild(block);
+        });
+        
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        
+        if (currentSyntaxIndex === 0) {
+            btnPrev.style.visibility = 'hidden';
+        } else {
+            btnPrev.style.visibility = 'visible';
+            btnPrev.innerText = '⬅ 戻る';
+        }
+        
+        if (currentSyntaxIndex === syntaxes.length - 1) {
+            btnNext.innerText = '一覧へ 🏠';
+        } else {
+            btnNext.innerText = '次へ ➡';
+        }
+        
+        contentDiv.scrollTop = 0;
+    }
+
+    function nextSyntax() {
+        const syntaxes = lessonData[currentLesson];
+        if (currentSyntaxIndex < syntaxes.length - 1) {
+            currentSyntaxIndex++;
+            renderSyntax();
+        } else {
+            goHome(); 
+        }
+    }
+
+    function prevSyntax() {
+        if (currentSyntaxIndex > 0) {
+            currentSyntaxIndex--;
+            renderSyntax();
+        }
+    }
+
+    function speakVN(text) {
+        if (!'speechSynthesis' in window) {
+            alert("お使いのブラウザは音声読み上げに対応していません。");
+            return;
+        }
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'vi-VN';
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+    }
+
+    window.onload = initHome;
+</script>
+</body>
+</html>
